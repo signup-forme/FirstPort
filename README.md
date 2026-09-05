@@ -1,31 +1,29 @@
-# 마리너 | Portfolio
+# 마리너 | FirstPort
 
-개인 프로필과 기술 스택, GitHub 프로젝트를 소개하는 반응형 포트폴리오 웹사이트입니다.
+개인 프로필을 보여주고 GitHub 프로젝트를 소개하는 자기소개 웹사이트입니다.
 
 ## 🌐 배포 사이트
 
 https://signup-forme.github.io/FirstPort/
 
-## 🛠️ Tech Stack
+## 🛠️ 사용 포맷들
 
-- HTML5
-- CSS3
-- Vanilla JavaScript
-- GitHub REST API
+- HTML
+- CSS
+- JavaScript
+- GitHub API
 - GitHub Pages
 
 ## ✨ 주요 기능
 
-- 반응형 포트폴리오 디자인
-- 모바일 햄버거 메뉴
+- 반응형 디자인
+- 모바일 햄버거 메뉴(三)
 - 다크 모드
-- 다크 모드 설정 LocalStorage 저장
+- 다크 모드 설정 내부 데이터에 저장
 - 스크롤에 따른 헤더 스타일 변경
 - 스크롤 Top 버튼
-- IntersectionObserver를 이용한 섹션 등장 애니메이션
 - Contact Form 입력값 검증
-- GitHub API를 이용한 Repository 자동 불러오기
-- GitHub API Loading / Success / Error / Empty 상태 처리
+- GitHub API를 이용한 Repository 자동 불러오기 및 불러오기 실패 시[예) 계정명 틀림]
 
 ## 📱 반응형
 
@@ -33,18 +31,17 @@ https://signup-forme.github.io/FirstPort/
 
 - Mobile: 375px
 - Tablet: 768px
-- Desktop: 1024px 이상
+- Desktop: 1024px / 1440px
 
 ## 🔌 GitHub API
 
-GitHub REST API를 사용하여 `signup-forme` 계정의 Repository를 불러옵니다.
+GitHub API를 사용하여 사용자 계정의 Repository를 불러옵니다.
 
-API 요청 결과에 따라 다음 상태를 표시합니다.
+API 요청 성공 시 사용자 계정에 업로드된 프로젝트들을 띄웁니다.
 
-1. Loading
-2. Success
-3. Empty
-4. Error
+1. FirstWork → 코디세이 2기 입학연수 폴더
+2. VibeCoding → 한양대 바이브코딩 프로그램
+3. FirstPort → 이 프로젝트가 존재하는 폴더
 
 ## 💡 주요 JavaScript 구현
 
@@ -56,7 +53,7 @@ API 요청 결과에 따라 다음 상태를 표시합니다.
 - 다크 모드 → 테마 상태 변경 → 화면 테마 변경
 - 스크롤 → 스크롤 상태 변경 → 헤더 / Scroll Top 버튼 변경
 - GitHub API → Loading / Success / Error 상태 → 프로젝트 목록 렌더링
-- Contact Form → 입력 검증 상태 → 오류 / 성공 메시지 렌더링
+- Contact Form → 입력 검증 상태 → 비어있거나 잘못 입력 시 오류 / 성공 메시지 렌더링
 
 ## 👨‍💻 About
 
