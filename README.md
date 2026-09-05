@@ -75,15 +75,15 @@ API 요청 결과에 따라 다음 상태를 표시합니다.
 
 ### Desktop
 
-스크린샷을 추가할 예정입니다.
+![Desktop Screenshot](screenshots/DeskTop.png)
 
 ### Mobile
 
-스크린샷을 추가할 예정입니다.
+![Mobile Screenshot](screenshots/Mobile.png)
 
 ### Dark Mode
 
-스크린샷을 추가할 예정입니다.
+![Dark Mode Screenshot](screenshots/Dark_Mode.png)
 
 ## 📄 License
 
