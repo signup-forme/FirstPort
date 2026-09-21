@@ -26,12 +26,33 @@ https://signup-forme.github.io/FirstPort/
 
 #### HTML
 
+단순히 영역을 구분하는 것이 아닌 해당 태그가 가지는 의미와 역할을 기준으로 선택
+
+- header : 상단 헤더 영역[예) 로고, 테마 토글 버튼 등]
+- nav : navigation의 줄임말로, 내비게이션 메뉴
+- main : 웹페이지의 핵심 콘텐츠
+- section : 주제별로 관련 콘텐츠를 묶는 독립 단락
+- footer : 하단 푸터 영역[예) 저작권 정보, 외부사이트 링크 등]
 
 #### CSS
 
+- :root 변수의 이점
+  1) 색깔이나 폰트를 바꿀 때 여러 파일에 흩어진 값을 일일이 바꾸는 대신 :root 내의 변수 값 1개만 수정해도 전체에 반영된다.
+  2) :root 및 data-theme = "dark" 속성을 통해 테마별 변수 값만 재정의하면 테마 전환도 매우 깔끔하게 처리된다.
 
 #### JavaScript
 
+- onclick : 하나의 요소에는 하나의 이벤트만 등록할 수 있다. 따라서 새 이벤트가 들어오면 기존 이벤트를 덮어써버린다. HTML과 JavaScript를 같은 속성 내에서 관리하여 유지보수가 어렵다.
+- addEventListener : 동일한 이벤트에 여러 개의 인자를 중복으로 등록할 수 있다. 제거 시에는 removeEventListener로 제거할 수 있다. HTML과 JavaScript를 분리하여 관리할 수 있다.
+
+- 다크 모드
+  1) 테마 토글 버튼 클릭(click 이벤트 발생)
+  2) 변수 currentTheme를 'light'에서 'dark'로 변경하고, localStorage에 변경된 상태 값을 저장
+  3) 화면이 업데이트되며 data-theme = "dark" 속성을 추가하여 CSS 내 변수 값이 적용되며 실행
+
+- async/await & try/catch
+- map
+- Flexbox : Header, Project-Card, Footer / Grid : Skills, Projects
 
 ## ✨ 주요 기능
 
