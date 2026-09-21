@@ -29,7 +29,7 @@ https://signup-forme.github.io/FirstPort/
 단순히 영역을 구분하는 것이 아닌 해당 태그가 가지는 의미와 역할을 기준으로 선택
 
 - header : 상단 헤더 영역[예) 로고, 테마 토글 버튼 등]
-- nav : navigation의 줄임말로, 내비게이션 메뉴
+- nav : navigation의 줄임말로, 다른 페이지에 또는 현재 페이지 내의 다른 위치로 이동
 - main : 웹페이지의 핵심 콘텐츠
 - section : 주제별로 관련 콘텐츠를 묶는 독립 단락
 - footer : 하단 푸터 영역[예) 저작권 정보, 외부사이트 링크 등]
@@ -51,8 +51,13 @@ https://signup-forme.github.io/FirstPort/
   3) 화면이 업데이트되며 data-theme = "dark" 속성을 추가하여 CSS 내 변수 값이 적용되며 실행
 
 - async/await & try/catch
-- map
-- Flexbox : Header, Project-Card, Footer / Grid : Skills, Projects
+  - async : 불러오기
+  - await : 대기
+  - try : 실행 및 성공 코드
+  - catch : 실패 코드
+- map : 객체 배열을 받아 데이터를 각각 HTML 문자열로 변환(성공한 케이스일 때만 실행되므로 filter 미사용)
+- Flexbox(1차원 배열 레이아웃) : Header, Project-Card, Footer → 요소 크기가 유동적이거나 수직/수평 정렬에 유리한 요소에 사용
+- Grid(2차원 배열 레이아웃) : Skills, Projects → 화면 너비에 따라 개수를 유연하게 조절하는 곳을 최소한의 코드로 구현하기 위해 사용
 
 ## ✨ 주요 기능
 
