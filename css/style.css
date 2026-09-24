@@ -960,3 +960,7 @@ a {
   }
 
 }
+
+section[id] {
+  scroll-margin-top: 90px;
+}
