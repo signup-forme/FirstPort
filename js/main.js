@@ -1,542 +1,458 @@
-// =========================
-// DOM Elements
-// =========================
-
+const header = document.querySelector(".header");
 const menuToggle = document.querySelector(".menu-toggle");
 const navMenu = document.querySelector(".nav-menu");
+const navLinks = document.querySelectorAll(".nav-link");
 const themeToggle = document.querySelector(".theme-toggle");
+const scrollTopButton = document.querySelector("#scroll-top");
 
-const header = document.querySelector(".header");
+const projectStatus = document.querySelector("#project-status");
+const projectList = document.querySelector("#project-list");
 
-const scrollTopButton =
-  document.querySelector("#scroll-top");
+const contactForm = document.querySelector("#contact-form");
+const nameInput = document.querySelector("#name");
+const emailInput = document.querySelector("#email");
+const messageInput = document.querySelector("#message");
 
-const navLinks =
-  document.querySelectorAll(".nav-menu a");
-
-const revealElements =
-  document.querySelectorAll(".reveal");
-
-const projectStatus =
-  document.querySelector("#project-status");
-
-const projectList =
-  document.querySelector("#project-list");
-
-const contactForm =
-  document.querySelector("#contact-form");
+const nameError = document.querySelector("#name-error");
+const emailError = document.querySelector("#email-error");
+const messageError = document.querySelector("#message-error");
+const formSuccess = document.querySelector("#form-success");
 
 
-// =========================
-// Mobile Menu
-// =========================
+// ========================================
+// STATE
+// ========================================
 
-menuToggle.addEventListener("click", () => {
+const state = {
+  theme: localStorage.getItem("theme") === "dark"
+    ? "dark"
+    : "light",
 
-  navMenu.classList.toggle("active");
+  menuOpen: false,
 
-});
+  scrollY: window.scrollY,
 
+  projectsStatus: "loading",
 
-// 메뉴를 클릭하면 모바일 메뉴 닫기
-navLinks.forEach((link) => {
+  projects: [],
 
-  link.addEventListener("click", () => {
-
-    navMenu.classList.remove("active");
-
-  });
-
-});
-
-
-// =========================
-// Smooth Scroll
-// =========================
-
-navLinks.forEach((link) => {
-
-  link.addEventListener("click", (event) => {
-
-    event.preventDefault();
-
-    const targetId =
-      link.getAttribute("href");
-
-    const target =
-      document.querySelector(targetId);
-
-    if (target) {
-
-      target.scrollIntoView({
-        behavior: "smooth"
-      });
-
-    }
-
-  });
-
-});
-
-
-// =========================
-// Dark Mode
-// =========================
-
-const savedTheme =
-  localStorage.getItem("theme");
-
-
-// 저장된 테마 불러오기
-if (savedTheme === "dark") {
-
-  document.documentElement
-    .setAttribute("data-theme", "dark");
-
-  themeToggle.textContent = "☀️";
-
-}
-
-
-// 테마 변경
-themeToggle.addEventListener("click", () => {
-
-  const currentTheme =
-    document.documentElement
-      .getAttribute("data-theme");
-
-  if (currentTheme === "dark") {
-
-    document.documentElement
-      .removeAttribute("data-theme");
-
-    localStorage.setItem(
-      "theme",
-      "light"
-    );
-
-    themeToggle.textContent = "🌙";
-
-  } else {
-
-    document.documentElement
-      .setAttribute("data-theme", "dark");
-
-    localStorage.setItem(
-      "theme",
-      "dark"
-    );
-
-    themeToggle.textContent = "☀️";
-
+  form: {
+    name: "",
+    email: "",
+    message: "",
+    errors: {
+      name: "",
+      email: "",
+      message: ""
+    },
+    success: ""
   }
-
-});
-
-
-// =========================
-// Scroll Event
-// =========================
-
-window.addEventListener("scroll", () => {
-
-  const scrollY = window.scrollY;
-
-
-  // 60px 이상 스크롤하면 Header 변경
-  if (scrollY >= 60) {
-
-    header.classList.add("scrolled");
-
-  } else {
-
-    header.classList.remove("scrolled");
-
-  }
-
-
-  // 300px 이상 스크롤하면
-  // Scroll Top 버튼 표시
-  if (scrollY >= 300) {
-
-    scrollTopButton.classList.add("show");
-
-  } else {
-
-    scrollTopButton.classList.remove("show");
-
-  }
-
-});
-
-
-// =========================
-// Scroll Top Button
-// =========================
-
-scrollTopButton.addEventListener(
-  "click",
-  () => {
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
-
-  }
-);
-
-
-// =========================
-// Intersection Observer
-// =========================
-
-const observerOptions = {
-
-  threshold: 0.2
-
 };
 
 
-const observer =
-  new IntersectionObserver(
-    (entries) => {
+// ========================================
+// THEME RENDER
+// ========================================
 
-      entries.forEach((entry) => {
-
-        if (entry.isIntersecting) {
-
-          entry.target.classList.add(
-            "visible"
-          );
-
-          observer.unobserve(
-            entry.target
-          );
-
-        }
-
-      });
-
-    },
-    observerOptions
-  );
+const renderTheme = () => {
+  if (state.theme === "dark") {
+    document.body.setAttribute("data-theme", "dark");
+    themeToggle.textContent = "☀️";
+    themeToggle.setAttribute("aria-label", "라이트 모드로 변경");
+  } else {
+    document.body.removeAttribute("data-theme");
+    themeToggle.textContent = "🌙";
+    themeToggle.setAttribute("aria-label", "다크 모드로 변경");
+  }
+};
 
 
-revealElements.forEach((element) => {
+// ========================================
+// MENU RENDER
+// ========================================
 
-  observer.observe(element);
-
-});
-
-
-// =========================
-// GitHub API
-// =========================
-
-const githubUsername =
-  "signup-forme";
+const renderMenu = () => {
+  navMenu.classList.toggle("active", state.menuOpen);
+  menuToggle.setAttribute("aria-expanded", state.menuOpen);
+};
 
 
-const loadProjects = async () => {
+// ========================================
+// SCROLL RENDER
+// ========================================
 
-  // 로딩 상태
-  projectStatus.textContent =
-    "프로젝트를 불러오는 중...";
-
-  projectList.innerHTML = "";
-
-
-  try {
-
-    const response = await fetch(
-      `https://api.github.com/users/${githubUsername}/repos?sort=updated&per_page=12`
-    );
+const renderScroll = () => {
+  header.classList.toggle("scrolled", state.scrollY > 60);
+  scrollTopButton.classList.toggle("show", state.scrollY > 300);
+};
 
 
-    // HTTP 에러 확인
-    if (!response.ok) {
+// ========================================
+// PROJECT RENDER
+// ========================================
 
-      throw new Error(
-        `GitHub API Error: ${response.status}`
-      );
+const renderProjects = () => {
+  if (state.projectsStatus === "loading") {
+    projectStatus.textContent = "프로젝트를 불러오는 중...";
+    projectList.innerHTML = "";
+    return;
+  }
 
-    }
+  if (state.projectsStatus === "empty") {
+    projectStatus.textContent = "표시할 프로젝트가 없습니다.";
+    projectList.innerHTML = "";
+    return;
+  }
 
-
-    const repositories =
-      await response.json();
-
-
-    // 빈 상태
-    if (repositories.length === 0) {
-
-      projectStatus.textContent =
-        "표시할 프로젝트가 없습니다.";
-
-      return;
-
-    }
-
-
-    // 성공 상태
-    projectStatus.textContent =
-      "";
-
-
-    // map을 이용해서
-    // GitHub 데이터를 HTML 카드로 변환
-    const projectHTML =
-      repositories
-        .map((repo) => {
-
-          const {
-            name,
-            description,
-            html_url,
-            language,
-            stargazers_count
-          } = repo;
-
-
-          return `
-            <article class="project-card">
-
-              <h3>
-                ${name}
-              </h3>
-
-              <p>
-                ${description || "프로젝트 설명이 없습니다."}
-              </p>
-
-              <p>
-                언어:
-                ${language || "알 수 없음"}
-              </p>
-
-              <p>
-                ⭐ ${stargazers_count}
-              </p>
-
-              <a
-                href="${html_url}"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                GitHub에서 보기 →
-              </a>
-
-            </article>
-          `;
-
-        })
-        .join("");
-
-
-    projectList.innerHTML =
-      projectHTML;
-
-
-  } catch (error) {
-
-    console.error(
-      "GitHub 프로젝트 로딩 실패:",
-      error
-    );
-
-
-    // 에러 상태
+  if (state.projectsStatus === "error") {
     projectStatus.innerHTML = `
-      <p>
-        프로젝트를 불러올 수 없습니다.
-      </p>
-
-      <button
-        id="retry-projects"
-        class="button"
-        type="button"
-      >
+      <p>프로젝트를 불러올 수 없습니다.</p>
+      <button id="retry-projects" class="button" type="button">
         다시 시도
       </button>
     `;
 
+    projectList.innerHTML = "";
 
-    const retryButton =
-      document.querySelector(
-        "#retry-projects"
-      );
+    const retryButton = document.querySelector("#retry-projects");
 
+    if (retryButton) {
+      retryButton.addEventListener("click", loadProjects);
+    }
 
-    retryButton.addEventListener(
-      "click",
-      loadProjects
-    );
-
+    return;
   }
 
+  projectStatus.textContent = "";
+
+  projectList.innerHTML = state.projects
+    .map((repo) => {
+      const {
+        name,
+        description,
+        html_url,
+        language,
+        stargazers_count
+      } = repo;
+
+      return `
+        <article class="project-card">
+          <h3>${name}</h3>
+
+          <p>
+            ${description || "프로젝트 설명이 없습니다."}
+          </p>
+
+          <div class="project-meta">
+            <span>${language || "기타"}</span>
+            <span>⭐ ${stargazers_count}</span>
+          </div>
+
+          <a
+            href="${html_url}"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="project-link"
+          >
+            GitHub에서 보기
+          </a>
+        </article>
+      `;
+    })
+    .join("");
 };
 
 
-// 페이지가 로드되면 GitHub API 호출
-loadProjects();
+// ========================================
+// FORM RENDER
+// ========================================
 
-
-// =========================
-// Contact Form
-// =========================
-
-const validateEmail = (email) => {
-
-  const emailPattern =
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-  return emailPattern.test(email);
-
+const renderForm = () => {
+  nameError.textContent = state.form.errors.name;
+  emailError.textContent = state.form.errors.email;
+  messageError.textContent = state.form.errors.message;
+  formSuccess.textContent = state.form.success;
 };
 
 
-contactForm.addEventListener(
-  "submit",
-  (event) => {
+// ========================================
+// HAMBURGER MENU
+// ========================================
+
+menuToggle.addEventListener("click", () => {
+  state.menuOpen = !state.menuOpen;
+
+  renderMenu();
+});
+
+
+// ========================================
+// ANCHOR NAVIGATION
+// ========================================
+
+navLinks.forEach((link) => {
+  link.addEventListener("click", (event) => {
+    const targetId = link.getAttribute("href");
+    const targetSection = document.querySelector(targetId);
+
+    if (!targetSection) {
+      return;
+    }
 
     event.preventDefault();
 
+    const headerHeight = header.offsetHeight;
 
-    const name =
-      document.querySelector("#name");
+    const targetTop =
+      targetSection.getBoundingClientRect().top +
+      window.scrollY -
+      headerHeight -
+      10;
 
-    const email =
-      document.querySelector("#email");
+    window.scrollTo({
+      top: targetTop,
+      behavior: "smooth"
+    });
 
-    const message =
-      document.querySelector("#message");
+    state.menuOpen = false;
 
-
-    const nameError =
-      document.querySelector("#name-error");
-
-    const emailError =
-      document.querySelector("#email-error");
-
-    const messageError =
-      document.querySelector("#message-error");
-
-    const formSuccess =
-      document.querySelector("#form-success");
+    renderMenu();
+  });
+});
 
 
-    // 이전 메시지 초기화
-    nameError.textContent = "";
-    emailError.textContent = "";
-    messageError.textContent = "";
-    formSuccess.textContent = "";
+// ========================================
+// DARK MODE
+// ========================================
+
+themeToggle.addEventListener("click", () => {
+  state.theme = state.theme === "dark"
+    ? "light"
+    : "dark";
+
+  localStorage.setItem("theme", state.theme);
+
+  renderTheme();
+});
 
 
-    let isValid = true;
+// ========================================
+// SCROLL
+// ========================================
+
+window.addEventListener("scroll", () => {
+  state.scrollY = window.scrollY;
+
+  renderScroll();
+});
 
 
-    // 이름 검사
-    if (name.value.trim() === "") {
+// ========================================
+// SCROLL TOP
+// ========================================
 
-      nameError.textContent =
-        "이름을 입력해주세요.";
-
-      isValid = false;
-
-    }
-
-
-    // 이메일 검사
-    if (email.value.trim() === "") {
-
-      emailError.textContent =
-        "이메일을 입력해주세요.";
-
-      isValid = false;
-
-    } else if (
-      !validateEmail(email.value.trim())
-    ) {
-
-      emailError.textContent =
-        "올바른 이메일 형식을 입력해주세요.";
-
-      isValid = false;
-
-    }
+scrollTopButton.addEventListener("click", () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+});
 
 
-    // 메시지 검사
-    if (message.value.trim() === "") {
+// ========================================
+// INTERSECTION OBSERVER
+// ========================================
 
-      messageError.textContent =
-        "메시지를 입력해주세요.";
-
-      isValid = false;
-
-    }
-
-
-    // 유효성 검사 실패
-    if (!isValid) {
-
-      return;
-
-    }
-
-
-    // 성공 상태
-    formSuccess.textContent =
-      "메시지가 정상적으로 작성되었습니다!";
-
-
-    // 실제 서버 전송은 하지 않고
-    // 폼 내용 초기화
-    contactForm.reset();
-
+const observer = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("visible");
+        observer.unobserve(entry.target);
+      }
+    });
+  },
+  {
+    threshold: 0.2
   }
 );
 
+const revealElements = document.querySelectorAll(".reveal");
 
-// =========================
-// Input Event
-// =========================
-
-const formInputs =
-  contactForm.querySelectorAll(
-    "input, textarea"
-  );
-
-
-formInputs.forEach((input) => {
-
-  input.addEventListener(
-    "input",
-    () => {
-
-      const errorElement =
-        document.querySelector(
-          `#${input.id}-error`
-        );
-
-      if (
-        errorElement &&
-        input.value.trim() !== ""
-      ) {
-
-        errorElement.textContent = "";
-
-      }
-
-      const formSuccess =
-        document.querySelector(
-          "#form-success"
-        );
-
-      formSuccess.textContent = "";
-
-    }
-  );
-
+revealElements.forEach((element) => {
+  observer.observe(element);
 });
+
+
+// ========================================
+// GITHUB API
+// ========================================
+
+const githubUsername = "signup-forme";
+
+const loadProjects = async () => {
+  state.projectsStatus = "loading";
+  state.projects = [];
+
+  renderProjects();
+
+  try {
+    const response = await fetch(
+      `https://api.github.com/users/${githubUsername}/repos?sort=updated&per_page=12`
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `GitHub API 요청 실패: ${response.status}`
+      );
+    }
+
+    const repositories = await response.json();
+
+    if (repositories.length === 0) {
+      state.projectsStatus = "empty";
+      state.projects = [];
+
+      renderProjects();
+
+      return;
+    }
+
+    state.projects = repositories;
+    state.projectsStatus = "success";
+
+    renderProjects();
+
+  } catch (error) {
+    console.error(error);
+
+    state.projectsStatus = "error";
+    state.projects = [];
+
+    renderProjects();
+  }
+};
+
+
+// ========================================
+// FORM VALIDATION
+// ========================================
+
+const validateForm = () => {
+  const {
+    name,
+    email,
+    message
+  } = state.form;
+
+  state.form.errors = {
+    name: "",
+    email: "",
+    message: ""
+  };
+
+  let isValid = true;
+
+  if (!name.trim()) {
+    state.form.errors.name = "이름을 입력해주세요.";
+    isValid = false;
+  }
+
+  if (!email.trim()) {
+    state.form.errors.email = "이메일을 입력해주세요.";
+    isValid = false;
+  } else if (
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+  ) {
+    state.form.errors.email =
+      "올바른 이메일 형식을 입력해주세요.";
+
+    isValid = false;
+  }
+
+  if (!message.trim()) {
+    state.form.errors.message =
+      "메시지를 입력해주세요.";
+
+    isValid = false;
+  }
+
+  return isValid;
+};
+
+
+// ========================================
+// CONTACT FORM SUBMIT
+// ========================================
+
+contactForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  state.form.name = nameInput.value;
+  state.form.email = emailInput.value;
+  state.form.message = messageInput.value;
+  state.form.success = "";
+
+  const isValid = validateForm();
+
+  if (!isValid) {
+    renderForm();
+    return;
+  }
+
+  state.form.success =
+    "메시지가 성공적으로 전송되었습니다.";
+
+  state.form.errors = {
+    name: "",
+    email: "",
+    message: ""
+  };
+
+  renderForm();
+
+  contactForm.reset();
+
+  state.form.name = "";
+  state.form.email = "";
+  state.form.message = "";
+});
+
+
+// ========================================
+// INPUT EVENT
+// ========================================
+
+contactForm.addEventListener("input", (event) => {
+  const field = event.target;
+
+  if (field === nameInput) {
+    state.form.name = field.value;
+    state.form.errors.name = "";
+  }
+
+  if (field === emailInput) {
+    state.form.email = field.value;
+    state.form.errors.email = "";
+  }
+
+  if (field === messageInput) {
+    state.form.message = field.value;
+    state.form.errors.message = "";
+  }
+
+  state.form.success = "";
+
+  renderForm();
+});
+
+
+// ========================================
+// INITIAL RENDER
+// ========================================
+
+renderTheme();
+renderMenu();
+renderScroll();
+renderForm();
+loadProjects();
