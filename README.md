@@ -42,8 +42,8 @@ https://signup-forme.github.io/FirstPort/
 
 #### JavaScript
 
-- onclick : 하나의 요소에는 하나의 이벤트만 등록할 수 있다. 따라서 새 이벤트가 들어오면 기존 이벤트를 덮어써버린다. HTML과 JavaScript를 같은 속성 내에서 관리하여 유지보수가 어렵다.
-- addEventListener : 동일한 이벤트에 여러 개의 인자를 중복으로 등록할 수 있다. 제거 시에는 removeEventListener로 제거할 수 있다. HTML과 JavaScript를 분리하여 관리할 수 있다.
+- onclick : HTML 요소에 이벤트 처리 코드를 직접 연결할 수 있지만, HTML과 JavaScript가 한 곳에 섞여 유지보수와 역할 분리가 어려워질 수 있다. 또한 `onclick` 프로퍼티에 새로운 함수를 할당하면 기존 함수가 교체된다.
+- addEventListener : HTML과 JavaScript를 분리하면서 이벤트를 등록할 수 있으며, 동일한 이벤트에 여러 이벤트 리스너를 등록할 수 있다. 필요하면 `removeEventListener`를 통해 등록한 리스너를 제거할 수 있다.
 
 - 다크 모드
   1) 테마 토글 버튼 클릭(click 이벤트 발생)
@@ -51,13 +51,13 @@ https://signup-forme.github.io/FirstPort/
   3) 화면이 업데이트되며 data-theme = "dark" 속성을 추가하여 CSS 내 변수 값이 적용되며 실행
 
 - async/await & try/catch
-  - async : 불러오기
-  - await : 대기
-  - try : 실행 및 성공 코드
-  - catch : 실패 코드
+  - async : 해당 함수가 Promise를 반환하도록 하고 비동기 작업을 `await`와 함께 사용할 수 있도록 한다.
+  - await : Promise가 처리될 때까지 해당 async 함수 내부의 다음 코드 실행을 잠시 기다린다.
+  - try : 비동기 작업을 포함한 코드를 실행한다.
+  - catch : try 블록에서 오류가 발생했을 때 오류를 처리한다.
 - map : 객체 배열을 받아 데이터를 각각 HTML 문자열로 변환(성공한 케이스일 때만 실행되므로 filter 미사용)
-- Flexbox(1차원 배열 레이아웃) : Header, Project-Card, Footer → 요소 크기가 유동적이거나 수직/수평 정렬에 유리한 요소에 사용
-- Grid(2차원 배열 레이아웃) : Skills, Projects → 화면 너비에 따라 개수를 유연하게 조절하는 곳을 최소한의 코드로 구현하기 위해 사용
+- Flexbox(1차원 배열 레이아웃) : Navbar와 About 영역처럼 요소를 한 방향으로 배치하거나 정렬하는 곳에 사용
+- Grid(2차원 배열 레이아웃) : Skills와 Projects처럼 행과 열을 이용해 여러 카드를 배치하는 곳에 사용
 
 ## ✨ 주요 기능
 
