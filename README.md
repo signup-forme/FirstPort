@@ -109,7 +109,15 @@ API 요청 성공 시 사용자 계정에 업로드된 프로젝트들을 띄웁
 
 ## Trivia
 
-### 📄 상태(STATE) 객체가 있으면 좋은 이유?
+### 이벤트 → 상태 변경 → 화면 업데이트
+
+다크모드 클릭 → state.theme 변경 → renderTheme() → 화면 변경
+
+GitHub API → state.projectsStatus = "loading" → renderProjects() → "불러오는 중..." → API 성공 → state.projects = repositories / state.projectsStatus = "success" → renderProjects() → 프로젝트 카드 출력
+
+폼 입력 → state.form 변경 → validateForm() → renderForm() → 오류 메시지 출력
+
+#### 📄 상태(STATE) 객체가 있으면 좋은 이유?
 
 - 산발적인 일반 변수로 두면 어떤 함수가 언제 값을 변경했는지 추적하기가 다소 까다롭고 이 과정에서 의도치 않은 에러가 발생할 수도 있다. 하나의 객체 안에 모아두면 데이터의 흐름을 파악하기 쉽다.
 - 일반 변수는 화면 상태 동기화가 어려워지고, 상태가 변경될 때 어떤 화면 요소를 업데이트해야 하는지 매번 수동으로 관리해야 해서 그만큼 코드가 매우 복잡해지기도 한다. 그걸 방지하는 것이다.
